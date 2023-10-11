@@ -142,19 +142,19 @@ class ADC_Model():
             os.makedirs(output_dir)
 
         file_num = 1 # initialize current file number
-        file_count = len([name for name in os.listdir(input_dir) if (os.path.isfile(input_dir + '/' + name))])
         for file in os.listdir(input_dir):
-            # load the file
-            image = cv2.imread(input_dir + '/' + file)
-            image = self.resize_image(image, max_dim)
-            image = self.pad_image(image, max_dim, max_dim)
-            file_png = file[:-3] + 'png'
-            if not cv2.imwrite(os.path.join(output_dir, file_png), image):
-                raise Exception("Could not write image")
-            else:
-                cv2.imwrite(os.path.join(output_dir, file_png), image)
-            image = None # clear out the image
-            file_num+=1
+            if ('OVERLAY' not in file) and (file[-3:].lower() == 'bmp'):
+                # load the file
+                image = cv2.imread(input_dir + '/' + file)
+                image = self.resize_image(image, max_dim)
+                image = self.pad_image(image, max_dim, max_dim)
+                file_png = file[:-3] + 'png'
+                if not cv2.imwrite(os.path.join(output_dir, file_png), image):
+                    raise Exception("Could not write image")
+                else:
+                    cv2.imwrite(os.path.join(output_dir, file_png), image)
+                image = None # clear out the image
+                file_num+=1
 
 
     def evaluate_test(self, model, img_height, img_width, batch_size, data_dir):
@@ -232,6 +232,7 @@ class ADC_Model():
                                             img_width=img_width, batch_size=batch_size,data_dir=data_dir)
         loc_x_paths = []
         for x_path in x_paths:
+            x_path = x_path.replace('\\', '/')
             if (x_path.split('/')[-1][-3:] == 'png'):
                 path = x_path.split('/')[-1][:-3] + 'bmp'
                 loc_x_paths.append(path)
