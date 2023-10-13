@@ -1,4 +1,9 @@
-__author__ = 'Vishakh Pillai - ATTD Yield Prediction & Modeling'
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Oct 13 10:45:00 2023
+
+@author: Vishakh Pillai - ATTD Yield Prediction & Modeling
+"""
 
 
 # file processing, numpy, pandas imports
@@ -18,7 +23,7 @@ import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
 
-class ADC_Model():
+class HEX_Model():
 
     def __init__(self, image_folder, model_path):
         '''
