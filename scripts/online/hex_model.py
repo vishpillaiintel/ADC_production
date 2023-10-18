@@ -95,7 +95,7 @@ def pad(image, x_pix, y_pix):
 
     return padded_img
 
-def resize_images(input_full_path, output_dir, max_dim=256):
+def resize_images(input_full_paths, output_dir, max_dim=256):
     '''
     Resizes image in the specified directory proportionally
     based on a specified maximum dimension. Also, image will be converted 
@@ -114,12 +114,13 @@ def resize_images(input_full_path, output_dir, max_dim=256):
     -------
     No return value
     '''
-    for file in input_full_path:
-        if ('OVERLAY' not in file) and (file[-3:].lower() == 'bmp'):
+    for full_path in input_full_paths:
+        if ('OVERLAY' not in full_path) and (full_path[-3:].lower() == 'bmp'):
             # load the file
-            image = cv2.imread(input_full_path + '/' + file)
+            image = cv2.imread(full_path)
             image = resize(image, max_dim)
             image = pad(image, max_dim, max_dim)
+            file = os.path.basename(full_path)
             file_png = file[:-3] + 'png'
             if not cv2.imwrite(os.path.join(output_dir, file_png), image):
                 raise Exception("Could not write image")
@@ -240,7 +241,7 @@ class HEX_Model():
         predictions = np.reshape(pred,(pred.shape[0],))
         prediction_map = {0: 'FM', 1: 'OPEN', 2: 'SHORT', 3: 'TRANS_FM'}
         predictions_mapped = [prediction_map[pred] for pred in predictions]
-        d = {'MAU_IMAGE': loc_x_paths, 'ADC_CLASS': predictions, 'CONF': conf}
+        d = {'MAU_IMAGE': loc_x_paths, 'ADC_CLASS': predictions_mapped, 'CONF': conf}
         res = pd.DataFrame(data=d)
         res.to_csv(self.output_path)
         
